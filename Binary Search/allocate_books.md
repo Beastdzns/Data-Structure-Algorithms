@@ -95,3 +95,62 @@ Binary search finds the **minimum feasible limit efficiently**.
 ## One-Line Explanation
 
 > “We binary search on the minimum possible maximum pages because the feasibility of allocation is monotonic.”
+
+
+## Code
+
+```cpp
+#include<bits/stdc++.h>
+bool possible(vector<int>& arr, int n, int m, int maxPages){
+    int studentCnt = 1;
+    int pageSum = 0;
+    
+    for(int i=0;i<n;i++){
+        if(pageSum + arr[i] <= maxPages){
+            pageSum += arr[i];
+        } else {
+            studentCnt++;
+            pageSum = arr[i];
+            if(studentCnt > m)
+                return false;
+        }
+    }
+    return true;
+}
+int Solution::books(vector<int> &A, int B) {
+    int n = A.size();
+    if(B > n) return -1;
+    
+    int lb = *max_element(A.begin(), A.end());
+    int sum = accumulate(A.begin(), A.end(), 0);
+    int ans = -1;
+    
+    while(lb <= sum){
+        int mid = lb + (sum-lb) / 2;
+        if(possible(A, n, B, mid)){
+            ans = mid;
+            sum = mid-1;
+        } else {
+            lb = mid + 1;
+        }
+    }
+    
+    return ans;
+}
+
+int Solution::books(vector<int> &A, int B) {
+    int n = A.size();
+    if (B > n) return -1;
+
+    int lb = *max_element(A.begin(), A.end());
+    int ub = accumulate(A.begin(), A.end(), 0);
+
+    for (int pages = lb; pages <= ub; pages++) {
+        if (possible(A, n, B, pages)) {
+            return pages;   
+        }
+    }
+
+    return -1;
+}
+```
